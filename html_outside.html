@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Nessun Dorma</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js">
+    </script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+
+
+<body>
+    <script type="text/javascript">
+
+        var config = {
+            type: Phaser.AUTO,
+            width: 1280, height: 720,
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    debug: true
+                }
+            },
+            input: { gamepad: true },
+
+            scene: { preload: preload, create: create, update: update }
+
+
+
+        };
+
+        new Phaser.Game(config);
+
+        function preload() {
+            this.load.spritesheet('hero', 'sprite_anim_hero.png',
+                { frameWidth: 30, frameHeight: 40});
+            this.load.image('Props_ZeldaLike', 'Props_ZeldaLike.png');
+            this.load.tilemapTiledJSON("carte", "niveau_outside.json");
+
+        }
+        var cursors;
+        var player;
+        var cursors;
+        var gameOver;
+        var collectsheep
+        var sheep
+        var score = 0;
+        var scoreText
+
+        gameOver = false;
+        sens = 1;
+
+        function create() {
+            const carteDuNiveau = this.add.tilemap("carte");
+
+            const tileset = carteDuNiveau.addTilesetImage(
+                "Props_ZeldaLike",
+                "Props_ZeldaLike"
+            );
+
+            const eau = carteDuNiveau.createLayer(
+                "eau",
+                tileset
+            );
+            const sol = carteDuNiveau.createLayer(
+                "sol",
+                tileset
+            );
+            const batiment = carteDuNiveau.createLayer(
+                "batiment",
+                tileset
+            );
+            const props_outside = carteDuNiveau.createLayer(
+                "props_outside",
+                tileset
+            );
+            const sang_lumiere = carteDuNiveau.createLayer(
+                "sang_lumiere",
+                tileset
+            );
+
+            const escalier = carteDuNiveau.createLayer(
+                "escalier",
+                tileset
+            );
+
+
+
+
+            
+            eau.setCollisionByProperty({ estsolide: true });
+            props_outside.setCollisionByProperty({ estsolide: true });
+            batiment.setCollisionByProperty({ estsolide: true });
+            player = this.physics.add.sprite(30, 850, 'hero');
+            player.setCollideWorldBounds(false);
+            this.physics.add.collider(player, batiment);
+            this.physics.add.collider(player, props_outside);
+            this.physics.add.collider(player, eau);
+
+
+
+
+
+            // redimentionnement du monde avec les dimensions calculées via tiled
+            this.physics.world.setBounds(0, 0, 1000, 1180);
+            //  ajout du champs de la caméra de taille identique à celle du monde
+            this.cameras.main.setBounds(0, 0, 1000, 1180);
+            // ancrage de la caméra sur le joueur
+            this.cameras.main.startFollow(player);
+
+
+            this.anims.create({
+                key: 'left',
+                frames: this.anims.generateFrameNumbers('hero', { start: 0, end: 3 }),
+                frameRate: 10,
+                repeat: -1
+            });
+            this.anims.create({
+                key: 'turn',
+                frames: [{ key: 'hero', frame: 5 }],
+                frameRate: 20
+            });
+            this.anims.create({
+                key: 'right',
+                frames: this.anims.generateFrameNumbers('hero', { start: 7, end: 13 }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            cursors = this.input.keyboard.createCursorKeys();
+
+        }
+
+        canMove = true
+        function update() {
+
+
+
+            if (gameOver) { return; }
+
+            if (cursors.left.isDown) { //si la touche gauche est appuyée
+                player.setVelocityX(-160); //alors vitesse négative en X
+                player.anims.play('left', true); //et animation => gauche
+            }
+            else if (cursors.right.isDown) { //sinon si la touche droite est appuyée
+                player.setVelocityX(160); //alors vitesse positive en X
+                player.anims.play('right', true); //et animation => droite
+
+            }
+            else if (cursors.down.isDown) { //descendre plus vite
+                player.setVelocityY(160);
+            }
+            else if (cursors.up.isDown) { //descendre plus vite
+                player.setVelocityY(-160);
+            }
+            else { // sinon
+                player.setVelocityX(0); //vitesse nulle
+                player.setVelocityY(0)
+                player.anims.play('turn'); //animation fait face caméra
+            }
+
+
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>
