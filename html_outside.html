@@ -28,7 +28,8 @@
             },
             input: { gamepad: true },
 
-            scene: { preload: preload, create: create, update: update }
+            scene: { preload: preload, create: create, update: update },
+            antialias: false
 
 
 
@@ -38,7 +39,7 @@
 
         function preload() {
             this.load.spritesheet('hero', 'sprite_anim_hero.png',
-                { frameWidth: 30, frameHeight: 40});
+                { frameWidth: 32, frameHeight: 53});
             this.load.image('Props_ZeldaLike', 'Props_ZeldaLike.png');
             this.load.tilemapTiledJSON("carte", "niveau_outside.json");
 
@@ -75,6 +76,14 @@
                 "batiment",
                 tileset
             );
+            const tp1 = carteDuNiveau.createLayer(
+                "tp1",
+                tileset
+            );
+            const tp2 = carteDuNiveau.createLayer(
+                "tp2",
+                tileset
+            );
             const props_outside = carteDuNiveau.createLayer(
                 "props_outside",
                 tileset
@@ -92,26 +101,31 @@
 
 
 
-            
+            tp1.setCollisionByExclusion(-1,true)
+            tp2.setCollisionByExclusion(-1,true)
             eau.setCollisionByProperty({ estsolide: true });
             props_outside.setCollisionByProperty({ estsolide: true });
             batiment.setCollisionByProperty({ estsolide: true });
             player = this.physics.add.sprite(30, 850, 'hero');
             player.setCollideWorldBounds(false);
+            player.setScale(0.6)
             this.physics.add.collider(player, batiment);
             this.physics.add.collider(player, props_outside);
             this.physics.add.collider(player, eau);
-
+            this.physics.add.collider(player, tp1,Tp1);
+            this.physics.add.collider(player, tp2,Tp2);
 
 
 
 
             // redimentionnement du monde avec les dimensions calculées via tiled
-            this.physics.world.setBounds(0, 0, 1000, 1180);
+            this.physics.world.setBounds(0, 0, 1440, 1120);
             //  ajout du champs de la caméra de taille identique à celle du monde
-            this.cameras.main.setBounds(0, 0, 1000, 1180);
+            this.cameras.main.setBounds(0, 0, 1440, 1120);
             // ancrage de la caméra sur le joueur
             this.cameras.main.startFollow(player);
+            this.cameras.main.zoom = 2.5
+            
 
 
             this.anims.create({
@@ -144,19 +158,19 @@
             if (gameOver) { return; }
 
             if (cursors.left.isDown) { //si la touche gauche est appuyée
-                player.setVelocityX(-160); //alors vitesse négative en X
+                player.setVelocityX(-90); //alors vitesse négative en X
                 player.anims.play('left', true); //et animation => gauche
             }
             else if (cursors.right.isDown) { //sinon si la touche droite est appuyée
-                player.setVelocityX(160); //alors vitesse positive en X
+                player.setVelocityX(90); //alors vitesse positive en X
                 player.anims.play('right', true); //et animation => droite
 
             }
             else if (cursors.down.isDown) { //descendre plus vite
-                player.setVelocityY(160);
+                player.setVelocityY(90);
             }
             else if (cursors.up.isDown) { //descendre plus vite
-                player.setVelocityY(-160);
+                player.setVelocityY(-90);
             }
             else { // sinon
                 player.setVelocityX(0); //vitesse nulle
@@ -166,6 +180,14 @@
 
 
 
+        }
+        function Tp1(){
+            player.x = 30*32
+            player.y = 14*32
+        }
+        function Tp2(){
+            player.x = 14*32
+            player.y = 29*32
         }
 
 
