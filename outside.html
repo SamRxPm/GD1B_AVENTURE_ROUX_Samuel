@@ -153,7 +153,7 @@
             this.physics.add.collider(player, eau);
             this.physics.add.collider(player, tp1, this.Tp1);
             this.physics.add.collider(player, tp2, this.Tp2);
-
+            
             
             
             //musique
@@ -505,6 +505,8 @@
         preload(){
             this.load.spritesheet('hero', 'sprite_anim_hero.png',
             { frameWidth: 32, frameHeight: 53 });
+            this.load.spritesheet('enemy', 'sprite_lucciano.png', { frameWidth: 32, frameHeight: 48 });
+            this.load.spritesheet('enemyAnim', 'sprite_lucciano_anim.png', { frameWidth: 64, frameHeight: 96 });
             this.load.image('Props_ZeldaLike', 'Props_ZeldaLike.png');
             this.load.tilemapTiledJSON('niveau3', "niveau_opera.json");
             this.load.audio('music2', ['Lucciano.mp3']);
@@ -556,6 +558,19 @@
             musique.stop('music');
             musique = this.sound.add('music2', { loop: true });
             musique.play();
+
+            //animation ennemi
+            this.enemy = this.add.sprite(19*32, 9*32, 'enemy');
+            this.anims.create({
+                key: 'enemy_anim',
+                frames: this.anims.generateFrameNumbers('enemyAnim', { start: 0, end: 4 }),
+                frameRate: 4,
+                repeat: -1
+            });
+            this.enemy.anims.play('enemy_anim');
+  
+            
+            
             
             
             // redimentionnement du monde avec les dimensions calculées via tiled
@@ -615,6 +630,7 @@
                 player.setVelocityY(0)
                 player.anims.play('turn'); //animation fait face caméra
             }
+            
         }
         sortieopera(){
             this.scene.start("gameScene", {
