@@ -384,8 +384,9 @@
         
         
         preload(){
-            this.load.spritesheet('hero', 'sprite_anim_hero.png',
-            { frameWidth: 32, frameHeight: 53 });
+            this.load.spritesheet('hero', 'sprite_anim_hero.png',{ frameWidth: 32, frameHeight: 53 });
+            this.load.spritesheet('demon', 'sprite_demon1.png', { frameWidth: 32, frameHeight: 53 });
+            this.load.spritesheet('demonAnim', 'Sprite_demon1_anim.png', { frameWidth: 64, frameHeight: 96 });
             this.load.image('Props_ZeldaLike', 'Props_ZeldaLike.png');
             this.load.tilemapTiledJSON('niveau2', "niveau_academie.json");
         }
@@ -442,6 +443,19 @@
             // ancrage de la caméra sur le joueur
             this.cameras.main.startFollow(player);
             this.cameras.main.zoom = 2.5
+
+            //animation ennemi
+            this.demon = this.add.sprite(11*32, 26*32, 'demon');
+            this.anims.create({
+                key: 'demon_anim',
+                frames: this.anims.generateFrameNumbers('demon', { start: 0, end: 3 }),
+                frameRate: 4,
+                repeat: -1
+            });
+            this.demon.anims.play('demon_anim');
+            this.demon.setSize(24, 20)
+
+
             
             this.anims.create({
                 key: 'left',
@@ -641,12 +655,7 @@
             }
             
         }
-        sortieopera(){
-            this.scene.start("gameScene", {
-                x: 12*32,
-                y: 8*32
-            })
-        }
+        
     }
     
     
